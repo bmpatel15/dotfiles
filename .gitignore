@@ -1,0 +1,13 @@
+# Compiled spell files. Source of truth is spell/en.utf-8.add; the .spl is
+# rebuilt automatically on first markdown buffer (see lua/bigb/util.lua).
+*.spl
+
+# Editor / OS noise
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Anything explicitly kept local to one machine
+*.local
+.env
