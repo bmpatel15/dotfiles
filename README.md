@@ -86,3 +86,4 @@ spell/           personal dictionary
 
 `CONFIG-REVIEW.md` inside the nvim package is a written audit of the config —
 what it does well, what is missing, and a prioritised list of what to add next.
+# dotfiles
