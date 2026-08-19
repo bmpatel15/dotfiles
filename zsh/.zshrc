@@ -1,0 +1,231 @@
+# Show the fastfetch system-info banner when opening a terminal.
+# Kept ABOVE the p10k instant-prompt block so it doesn't trip p10k's
+# "console output during initialization" warning. Guarded to interactive,
+# top-level shells so it doesn't fire in scripts or nested `zsh` subshells.
+if [[ -o interactive && $SHLVL -eq 1 ]] && command -v fastfetch &>/dev/null; then
+  # close-boxes.awk auto-fits each info box and draws its right wall, capped
+  # to $COLUMNS so it never wraps. Drop the logo when the pane (e.g. a tiled
+  # half) is too narrow to fit logo + boxes, so the boxes still fit on their own.
+  ff_logo=(); (( COLUMNS < 90 )) && ff_logo=(--logo none)
+  fastfetch $ff_logo | LC_ALL=C.UTF-8 gawk -v cols=$COLUMNS -f ~/.config/fastfetch/close-boxes.awk
+  unset ff_logo
+fi
+
+# ── PKM daily greeter (once/day, first non-tmux interactive shell) ───────
+# Kept ABOVE the p10k instant-prompt block: it prints a banner and may open
+# nvim (console I/O / input), which trips p10k's "console output during
+# initialization" warning if run below the preamble. Uses the explicit path
+# because ~/.local/bin isn't on PATH yet this early. Disable auto-open with
+# PKM_AUTOOPEN=0.
+if [[ -o interactive && -z "${TMUX:-}" && -x "$HOME/.local/bin/pkm-daily" ]]; then
+  "$HOME/.local/bin/pkm-daily" || true
+fi
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+
+# Path to your Oh My Zsh installation.
+export ZSH="$HOME/.oh-my-zsh"
+
+# Set name of the theme to load --- if set to "random", it will
+# load a random theme each time Oh My Zsh is loaded, in which case,
+# to know which specific one was loaded, run: echo $RANDOM_THEME
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+ZSH_THEME="powerlevel10k/powerlevel10k"
+
+# Set list of themes to pick from when loading at random
+# Setting this variable when ZSH_THEME=random will cause zsh to load
+# a theme from this variable instead of looking in $ZSH/themes/
+# If set to an empty array, this variable will have no effect.
+# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+
+# Uncomment the following line to use case-sensitive completion.
+# CASE_SENSITIVE="true"
+
+# Uncomment the following line to use hyphen-insensitive completion.
+# Case-sensitive completion must be off. _ and - will be interchangeable.
+# HYPHEN_INSENSITIVE="true"
+
+# Uncomment one of the following lines to change the auto-update behavior
+# zstyle ':omz:update' mode disabled  # disable automatic updates
+# zstyle ':omz:update' mode auto      # update automatically without asking
+# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
+
+# Uncomment the following line to change how often to auto-update (in days).
+# zstyle ':omz:update' frequency 13
+
+# Uncomment the following line if pasting URLs and other text is messed up.
+# DISABLE_MAGIC_FUNCTIONS="true"
+
+# Uncomment the following line to disable colors in ls.
+# DISABLE_LS_COLORS="true"
+
+# Uncomment the following line to disable auto-setting terminal title.
+# DISABLE_AUTO_TITLE="true"
+
+# Uncomment the following line to enable command auto-correction.
+# ENABLE_CORRECTION="true"
+
+# Uncomment the following line to display red dots whilst waiting for completion.
+# You can also set it to another string to have that shown instead of the default red dots.
+# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
+# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
+# COMPLETION_WAITING_DOTS="true"
+
+# Uncomment the following line if you want to disable marking untracked files
+# under VCS as dirty. This makes repository status check for large repositories
+# much, much faster.
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# You can set one of the optional three formats:
+# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# or set a custom format using the strftime function format specifications,
+# see 'man strftime' for details.
+# HIST_STAMPS="mm/dd/yyyy"
+
+# Would you like to use another custom folder than $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
+
+# Which plugins would you like to load?
+# Standard plugins can be found in $ZSH/plugins/
+# Custom plugins may be added to $ZSH_CUSTOM/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(git sudo extract fzf-tab zsh-autosuggestions zsh-syntax-highlighting)
+
+source $ZSH/oh-my-zsh.sh
+
+# User configuration
+
+# export MANPATH="/usr/local/man:$MANPATH"
+
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='nvim'
+# fi
+
+# Compilation flags
+# export ARCHFLAGS="-arch $(uname -m)"
+
+# Set personal aliases, overriding those provided by Oh My Zsh libs,
+# plugins, and themes. Aliases can be placed here, though Oh My Zsh
+# users are encouraged to define aliases within a top-level file in
+# the $ZSH_CUSTOM folder, with .zsh extension. Examples:
+# - $ZSH_CUSTOM/aliases.zsh
+# - $ZSH_CUSTOM/macos.zsh
+# For a full list of active aliases, run `alias`.
+#
+# Example aliases
+# alias zshconfig="mate ~/.zshrc"
+# alias ohmyzsh="mate ~/.oh-my-zsh"
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# ── PATH: user bins + language toolchains ──────────────────────────────
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
+command -v go >/dev/null && export PATH="$(go env GOPATH)/bin:$PATH"
+
+# ── Editor ─────────────────────────────────────────────────────────────
+export EDITOR='nvim'
+export VISUAL='nvim'
+command -v bat >/dev/null && export MANPAGER="sh -c 'col -bx | bat -l man -p'" && export MANROFFOPT='-c'
+
+# ── History ────────────────────────────────────────────────────────────
+HISTSIZE=50000
+SAVEHIST=50000
+setopt HIST_IGNORE_ALL_DUPS HIST_IGNORE_SPACE SHARE_HISTORY INC_APPEND_HISTORY EXTENDED_HISTORY
+
+# ── Tool integrations (guarded so a missing tool never breaks the shell) ─
+command -v zoxide >/dev/null && eval "$(zoxide init zsh)"
+command -v fzf    >/dev/null && source <(fzf --zsh)
+command -v fnm    >/dev/null && eval "$(fnm env --use-on-cd)"
+
+# ── Aliases ────────────────────────────────────────────────────────────
+alias home='cd ~'
+alias config='cd ~/.config'
+alias dot='cd ~/bigb-config/'
+alias ov='cd ~/Documents/BigB-PKM/ && nvim'
+alias bigb='cd ~/Documents/BigB-PKM/'
+alias reload='exec zsh'
+# modern replacements (only if installed)
+if command -v eza >/dev/null; then
+  alias ls='eza --group-directories-first --icons=auto'
+  alias ll='eza -l --group-directories-first --icons=auto --git'
+  alias la='eza -la --group-directories-first --icons=auto --git'
+  alias lt='eza --tree --level=2 --icons=auto'
+fi
+command -v bat     >/dev/null && alias cat='bat --paging=never' && alias catp='bat'
+command -v lazygit >/dev/null && alias lg='lazygit'
+command -v zoxide  >/dev/null && alias cd='z'
+# tmux (attach-or-create; see BigB-PKM/08 - Attachments/Tmux Workflow.md)
+if command -v tmux >/dev/null; then
+  alias t='tmux'
+  alias tl='tmux ls'
+  alias tn='tmux new -s'
+  alias ta='tmux attach -t'
+  # tm [name]: attach to session <name> (default: main), creating it if absent.
+  tm() { local s="${1:-main}"; tmux new-session -A -s "$s"; }
+fi
+# git shortcuts
+alias gs='git status -sb'
+alias ga='git add'
+alias gc='git commit'
+alias gd='git diff'
+alias gl='git log --oneline --graph --decorate -20'
+alias gp='git push'
+alias gco='git checkout'
+# dirs
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+
+# ── PKM (BigB-PKM vault tooling; scripts in ~/bigb-config/bin) ───────────
+export PKM="$HOME/Documents/BigB-PKM"
+alias oo='cd "$PKM"'                             # cd into the vault
+alias od='nvim "$(today-note)"'                  # open today's daily (creates it first)
+alias or='nvim "$PKM/02 - Fleeting Notes/"*.md'  # open all fleeting notes
+alias ow='nvim "$(week-note)"'                   # open this week's review
+os() { nvim "$(sn "$@")"; }                      # os v|sv|jc "ref": open a scripture note
+
+# ── Vault backup (Obsidian Sync = primary sync; git = one-way backup) ────
+# Obsidian Sync moves notes between devices automatically. Git is now a
+# versioned BACKUP only: run `vpush` occasionally from ONE machine.
+# `vpull` is retired from routine — use it only to restore/inspect, since
+# routine two-way pulling is what used to conflict with Obsidian Sync.
+vst()   { git -C "$PKM" status -sb; }                       # vault git status from anywhere
+vpull() { git -C "$PKM" pull --rebase --autostash; }        # RESTORE only — not routine (see note above)
+vpush() {                                                    # one-way backup snapshot; optional msg: vpush "reorg"
+  git -C "$PKM" add -A
+  if git -C "$PKM" diff --cached --quiet; then
+    echo "vault: nothing to commit"; return 0
+  fi
+  git -C "$PKM" commit -m "vault sync: ${1:-$(date '+%Y-%m-%d %H:%M')}" && git -C "$PKM" push
+}
+
+# ── Yazi ───────────────────────────────────────────────────────────────
+# quitting with `q` drops the shell into yazi's last directory (Q quits without cd)
+y() {
+  local tmp cwd
+  tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+  command yazi "$@" --cwd-file="$tmp"
+  if cwd="$(command cat -- "$tmp")" && [[ -n "$cwd" && "$cwd" != "$PWD" ]]; then
+    builtin cd -- "$cwd"
+  fi
+  rm -f -- "$tmp"
+}
+alias yazi='y'

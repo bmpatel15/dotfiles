@@ -1,0 +1,47 @@
+# Ghostty — Omarchy Ethereal
+# Colors live in themes/ethereal; font/window/shader below.
+
+font-family = JetBrainsMono Nerd Font Mono
+font-size = 12
+
+theme = ethereal
+
+term = xterm-256color
+
+# Cursor
+cursor-style = block
+cursor-style-blink = true
+
+# Window (matches existing alacritty padding)
+window-padding-x = 14
+window-padding-y = 14
+
+# Transparency — do this HERE, not via Hyprland's decoration:active_opacity.
+# Compositor opacity alphas the whole window surface including glyphs, so text
+# washes into the wallpaper and the window reads as "gone". background-opacity
+# only touches the background and leaves glyphs fully opaque.
+# Keep hyprland.lua's active_opacity/inactive_opacity at 1.0.
+background-opacity = 0.85
+
+# Cells with an explicit background color stay opaque (this is the default;
+# stated explicitly so it isn't lost later).
+background-opacity-cells = false
+
+# Copy/paste — paired with Hyprland SUPER+C/SUPER+V (-> Ctrl+Insert / Shift+Insert).
+# Ghostty's default shift+insert pastes the PRIMARY selection; override it to the
+# clipboard so SUPER+V pastes exactly what SUPER+C copied.
+keybind = ctrl+insert=copy_to_clipboard
+keybind = shift+insert=paste_from_clipboard
+
+confirm-close-surface = false
+
+# Subtle comet-tail cursor trail.
+# Ghostty has no native cursor trail; this is a GLSL post-process shader.
+# Path is relative to ~/.config/ghostty/.
+# PERF: this was `always`, which redraws the full window at monitor refresh
+# forever — even unfocused, even with nothing changing. Measured at a constant
+# 3.1% CPU on a completely idle terminal. At 5120x2160 on an Intel UHD 770 that
+# is not a "small cost". `true` keeps the trail animating while focused and lets
+# it idle otherwise, which is the only time you can actually see it anyway.
+custom-shader = shaders/cursor_tail.glsl
+custom-shader-animation = true
